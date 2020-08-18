@@ -1,0 +1,92 @@
+﻿@model PartialCrud.Models.EmployeeModel
+<div class="modal fade" id="AddEditList" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.HiddenFor(x=>x.EmployeeId)
+                <div class="container">
+                    @using (Html.BeginForm("AddEdit", "Home", new { id = "myForm" }))
+                    {
+                        <div class="form-group">
+                            <label for="Name">Name:</label>
+                            @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label for="Email">Email:</label>
+
+                            @Html.TextBoxFor(x => x.Email, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label for="Designation">Designation:</label>
+                            @Html.TextBoxFor(x => x.Designation, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label for="Salary">Salary:</label>
+                            @Html.TextBoxFor(x => x.Salary, new { @class = "form-control" })
+
+                        </div>
+                        <div class="form-group">
+                            <label for="DateOfJoining">DateOfJoining:</label>
+                            @Html.TextBoxFor(x => x.DateOfJoining, "{0:yyyy-MM-dd}", new { @class = "form-control" ,@type = "date" })
+                        </div>
+                        <div class="form-group">
+                            <label for="Status">Status:</label>
+                            @Html.TextBoxFor(x => x.Status, new { @class = "form-control" })
+                        </div>
+
+                            <div class="row">
+                                <button type="button" id="btnSubmit" class="btn btn-primary">Submit</button>
+                                <button type="reset" id="btnReset" class="btn ">Reset</button>
+                            </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#btnSubmit").click(function () {
+
+            var formData = new FormData();
+            var formData = {};
+            formData.EmployeeId = $('#EmployeeId').val();
+            formData.Name = $('#Name').val();
+            formData.Email = $('#Email').val();
+            formData.Designation = $('#Designation').val();
+            formData.Salary = $('#Salary').val();
+            formData.DateOfJoining = $('#DateOfJoining').val();
+            formData.Status = $('#Status').val();
+           
+            $.ajax(
+            {
+                url: '/Home/AddEdit',
+                type: "POST",
+                data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    if (data.success) {
+                        $('#AddEditList').modal('hide');
+                        toastr.success(data.message);
+                        $('#tblHeader').DataTable().ajax.reload();
+                    }
+
+                },
+                error: function (data) {
+                    toastr.error("Something Went Wrong..");
+                }
+
+            });
+
+        });
+
+    });
+</script>

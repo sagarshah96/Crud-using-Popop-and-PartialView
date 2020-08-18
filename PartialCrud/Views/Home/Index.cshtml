@@ -1,0 +1,138 @@
+﻿
+@{
+    ViewBag.Title = "";
+
+}
+<script src="~/Scripts/jquery-3.5.1.min.js"></script>
+<link href="~/Content/DataTables/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="~/Content/toastr.css" rel="stylesheet" />
+@*<link href="~/Content/DataTables/css/responsive.dataTables.min.css" rel="stylesheet" />*@
+<script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/DataTables/dataTables.bootstrap.min.js"></script>
+<script src="~/Scripts/toastr.js"></script>
+<script>
+    var IsStatusOnly = '@ViewBag.IsStatusOnly.ToString().ToLower()' == "true" ? true : false;
+    $(document).ready(function () {
+        if (IsStatusOnly) {
+            GetGridDataPartial('All');
+
+            $("#liPending").removeClass('active');
+            $("#liAll").addClass('active');
+
+        }
+        else {
+            GetGridDataPartial('Pending');
+        }
+
+        $('a[name="tabStatus"]').click(function () {
+            GetGridDataPartial($(this).attr('spara'));
+        });
+
+
+    });
+
+    function GetGridDataPartial(status) {
+        $("#portlet_comments_1").empty();
+        $("#portlet_comments_2").empty();
+        $.ajax({
+            type: "POST",
+            url: "/Home/GetGridDataPartial",
+            data: 'html',
+            async: false,
+            data: { status: status },
+            success: function (result) {
+                if (status == "Pending") {
+                    $("#portlet_comments_1").html(result);
+                }
+                else {
+                    $("#portlet_comments_2").html(result);
+                }
+            },
+            error: function () {
+
+            }
+        });
+    }
+
+    function AddPopup(id) {
+        $.ajax({
+            type: "GET",
+            url: "/Home/AddEdit",
+            data: 'html',
+            async: false,
+            data: { id: id },
+            success: function (result) {
+                $("#divAddPopup").html(result);
+                $('#AddEditList').modal('show');
+            },
+            error: function (result) {
+
+            }
+        });
+    }
+
+    function Delete(Id) {
+        if (confirm("Are you sure you want to delete ...?")) {
+            var url = '@Url.Content("~/")' + "Home/DeleteData";
+            $.post(url, { id: Id }, function (Result) {
+                if (Result.success) {
+                    toastr.success(Result.message);
+                    oTable = $('#tblHeader').DataTable().ajax.reload();
+                    oTable.draw();
+                }
+                else {
+                    toastr.error(Result.message);
+                }
+            });
+        }
+        else {
+            return false;
+        }
+
+    }
+
+</script>
+
+<div id="divAddPopup"></div>
+
+<div class="page-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet light">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <h1 class="page-title">
+                                <span id="spanLabel"></span>
+                                <small></small>
+                            </h1>
+                        </div>
+                        <div class="col-md-6" style="text-align:right">
+                            <button type="button" class="btn btn-success" data-toggle="modal" onclick="AddPopup()" data-target="">
+                                <i class="fa fa-plus">  New</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet-title tabbable-line">
+                    <ul class="nav nav-tabs" style="margin-bottom: 10px;">
+                        <li class="active" id="liPending">
+                            <a href="#portlet_comments_1" name="tabStatus" id="tabPending" spara="Pending" data-toggle="tab">Pending</a>
+                        </li>
+                        <li id="liAll">
+                            <a href="#portlet_comments_2" name="tabStatus" id="tabAll" spara="All" data-toggle="tab">All</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="portlet-body" style="padding: 15px;">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="portlet_comments_1"></div>
+                        <div class="tab-pane active" id="portlet_comments_2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
