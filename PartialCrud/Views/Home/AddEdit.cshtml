@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                @Html.HiddenFor(x=>x.EmployeeId)
+                @Html.HiddenFor(x => x.EmployeeId)
                 <div class="container">
                     @using (Html.BeginForm("AddEdit", "Home", new { id = "myForm" }))
                     {
@@ -31,18 +31,23 @@
 
                         </div>
                         <div class="form-group">
-                            <label for="DateOfJoining">DateOfJoining:</label>
-                            @Html.TextBoxFor(x => x.DateOfJoining, "{0:yyyy-MM-dd}", new { @class = "form-control" ,@type = "date" })
+                            <label for="DateOfJoining">Date Of Joining:</label>
+                            @Html.TextBoxFor(x => x.DateOfJoining, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.CheckBox("isActive", false)
+                            <label for="Status">Click for Approval</label>
                         </div>
                         <div class="form-group">
                             <label for="Status">Status:</label>
                             @Html.TextBoxFor(x => x.Status, new { @class = "form-control" })
                         </div>
 
-                            <div class="row">
-                                <button type="button" id="btnSubmit" class="btn btn-primary">Submit</button>
-                                <button type="reset" id="btnReset" class="btn ">Reset</button>
-                            </div>
+                        <div class="row">
+                            <button type="button" id="btnSubmit" class="btn btn-primary">Submit</button>
+                            <button type="reset" id="btnReset" class="btn ">Reset</button>
+                        </div>
                     }
                 </div>
             </div>
@@ -51,7 +56,30 @@
 </div>
 
 <script>
+    
     $(document).ready(function () {
+
+        if ($('#EmployeeId').val() == '')
+        {
+            $('#Status').val('Pending');
+        }
+
+        if ($('#Status').val() == 'Pending')
+        {
+            $("#isActive").prop("checked", false);
+        }
+        else {
+            $("#isActive").prop("checked", true);
+        }
+
+        $('input[type="checkbox"]').click(function () {
+            if ($("#isActive").prop("checked") == true) {
+                $('#Status').val('All');
+            }
+            else if ($("#isActive").prop("checked") == false) {
+                $('#Status').val('Pending');
+            }
+        });
 
         $("#btnSubmit").click(function () {
 
@@ -64,7 +92,7 @@
             formData.Salary = $('#Salary').val();
             formData.DateOfJoining = $('#DateOfJoining').val();
             formData.Status = $('#Status').val();
-           
+
             $.ajax(
             {
                 url: '/Home/AddEdit',

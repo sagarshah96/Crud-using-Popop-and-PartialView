@@ -36,28 +36,23 @@ namespace PartialCrud.Controllers
                     var sortColumnDir = Request.Form.GetValues("order[0][dir]").FirstOrDefault();
                     var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
 
-
                     //Paging Size (10,20,50,100)    
                     int pageSize = length != null ? Convert.ToInt32(length) : 0;
                     int skip = start != null ? Convert.ToInt32(start) : 0;
                     int recordsTotal = 0;
 
-                    //obj.Configuration.ProxyCreationEnabled = false;
                     // Getting all  data   
-
                     var v = (from m in obj.Employee select m).Where(m => m.Status == status);
 
                     //Sorting    
                     if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDir)))
                     {
                         v = v.OrderBy(sortColumn + " " + sortColumnDir);
-
                     }
                     //Search    
                     if (!string.IsNullOrEmpty(searchValue))
                     {
                         v = v.Where(a => a.Name.Contains(searchValue) || a.Email.Contains(searchValue) || a.Designation.Contains(searchValue) || a.Salary.ToString().Contains(searchValue) || a.DateOfJoining.ToString().Contains(searchValue));
-
                     }
 
                     //total number of rows count     
@@ -76,30 +71,35 @@ namespace PartialCrud.Controllers
         [HttpGet]
         public ActionResult AddEdit(int? id)
         {
-            if (id == null)
+            try
             {
-                return PartialView("AddEdit");
-            }
-            else
-            {
-                using (masterDBEntities obj = new masterDBEntities())
+                if (id == null)
                 {
-                    EmployeeModel emp = new EmployeeModel();
-
-                    emp = obj.Employee.Where(x => x.EmployeeId == id).Select(x => new EmployeeModel
-                    {
-                        EmployeeId = x.EmployeeId,
-                        Name = x.Name,
-                        Email = x.Email,
-                        Designation = x.Designation,
-                        Salary = x.Salary,
-                        DateOfJoining = x.DateOfJoining,
-                        Status = x.Status
-                    }).FirstOrDefault();
-
-                    return PartialView("AddEdit", emp);
-
+                    return PartialView("AddEdit");
                 }
+                else
+                {
+                    using (masterDBEntities obj = new masterDBEntities())
+                    {
+                        EmployeeModel emp = new EmployeeModel();
+
+                        emp = obj.Employee.Where(x => x.EmployeeId == id).Select(x => new EmployeeModel
+                        {
+                            EmployeeId = x.EmployeeId,
+                            Name = x.Name,
+                            Email = x.Email,
+                            Designation = x.Designation,
+                            Salary = x.Salary,
+                            DateOfJoining = x.DateOfJoining,
+                            Status = x.Status
+                        }).FirstOrDefault();
+                        return PartialView("AddEdit", emp);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
         [HttpPost]
@@ -156,10 +156,9 @@ namespace PartialCrud.Controllers
                     return Json(new { success = true, message = "Successfully Delete..!" }, JsonRequestBehavior.AllowGet);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw ex;
             }
         }
     }
