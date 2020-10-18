@@ -103,7 +103,7 @@
                 success: function (data) {
                     if (data.success) {
                         $('#AddEditList').modal('hide');
-                        toastr.success(data.message);
+                        toastr.success(data.msg);
                         $('#tblHeader').DataTable().ajax.reload();
                     }
 

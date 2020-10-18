@@ -4,7 +4,7 @@ namespace PartialCrud.Models
 {
     public class EmployeeModel
     {
-        public int EmployeeId { get; set; }
+        public Int64 EmployeeId { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Designation { get; set; }

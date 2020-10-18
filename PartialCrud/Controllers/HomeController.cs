@@ -6,11 +6,20 @@ using System.Web.Mvc;
 using PartialCrud.Data;
 using PartialCrud.Models;
 using System.Linq.Dynamic;
+using PartialCrud.Service;
 
 namespace PartialCrud.Controllers
 {
     public class HomeController : Controller
     {
+
+        public IEmployee ES = new EmployeeService();
+
+        //public HomeController (EmployeeService ES)
+        //{
+        //    this.ES = ES;
+        //}
+
         // GET: Home
         public ActionResult Index()
         {
@@ -69,97 +78,35 @@ namespace PartialCrud.Controllers
             }
         }
         [HttpGet]
-        public ActionResult AddEdit(int? id)
+        public ActionResult AddEdit(Int64? id)
         {
-            try
+            if (id == null)
             {
-                if (id == null)
-                {
-                    return PartialView("AddEdit");
-                }
-                else
-                {
-                    using (masterDBEntities obj = new masterDBEntities())
-                    {
-                        EmployeeModel emp = new EmployeeModel();
-
-                        emp = obj.Employee.Where(x => x.EmployeeId == id).Select(x => new EmployeeModel
-                        {
-                            EmployeeId = x.EmployeeId,
-                            Name = x.Name,
-                            Email = x.Email,
-                            Designation = x.Designation,
-                            Salary = x.Salary,
-                            DateOfJoining = x.DateOfJoining,
-                            Status = x.Status
-                        }).FirstOrDefault();
-                        return PartialView("AddEdit", emp);
-                    }
-                }
+                return PartialView("AddEdit");
             }
-            catch (Exception ex)
+            else
             {
-                throw ex;
+                return PartialView("AddEdit", ES.AddEdit(id));
             }
         }
         [HttpPost]
         public ActionResult AddEdit(EmployeeModel empm)
         {
-            try
+            string msg = null;
+            if (ES.Save(empm, out msg))
             {
-                using (masterDBEntities obj = new masterDBEntities())
-                {
-                    Employee emp = new Employee();
-                    if (empm.EmployeeId == 0)
-                    {
-                        emp.Name = empm.Name;
-                        emp.Email = empm.Email;
-                        emp.Designation = empm.Designation;
-                        emp.Salary = empm.Salary;
-                        emp.DateOfJoining = empm.DateOfJoining;
-                        emp.Status = empm.Status;
-                        obj.Employee.Add(emp);
-                        obj.SaveChanges();
-                        return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
-                    }
-                    else
-                    {
-                        var empp = obj.Employee.Find(empm.EmployeeId);
-                        empp.Name = empm.Name;
-                        empp.Email = empm.Email;
-                        empp.Designation = empm.Designation;
-                        empp.Salary = empm.Salary;
-                        empp.DateOfJoining = empm.DateOfJoining;
-                        empp.Status = empm.Status;
-                        obj.SaveChanges();
-                        return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);
-                    }
-                }
+                return Json(new { success = true, msg }, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return Json("", JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public JsonResult DeleteData(int? id)
         {
-            try
-            {
-                using (masterDBEntities obj = new masterDBEntities())
-                {
-                    var v = obj.Employee.Find(id);
-                    if (id == null)
-                        return Json(new { success = true, message = "Not Deleted..!" }, JsonRequestBehavior.AllowGet);
-                    obj.Employee.Remove(v);
-                    obj.SaveChanges();
-                    return Json(new { success = true, message = "Successfully Delete..!" }, JsonRequestBehavior.AllowGet);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            bool data = ES.Delete(id);
+            if (data)
+                return Json(new { success = true, message = "Successfully Delete..!" }, JsonRequestBehavior.AllowGet);
+            else
+                return Json(new { success = true, message = "Not Deleted..!" }, JsonRequestBehavior.AllowGet);
         }
     }
 }

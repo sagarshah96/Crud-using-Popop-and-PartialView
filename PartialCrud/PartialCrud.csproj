@@ -401,6 +401,8 @@
     </Compile>
     <Compile Include="Models\EmployeeModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\EmployeeService.cs" />
+    <Compile Include="Service\IEmployee.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
