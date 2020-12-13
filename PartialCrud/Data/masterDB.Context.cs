@@ -25,6 +25,9 @@ namespace PartialCrud.Data
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<City> City { get; set; }
+        public virtual DbSet<Country> Country { get; set; }
         public virtual DbSet<Employee> Employee { get; set; }
+        public virtual DbSet<State> State { get; set; }
     }
 }

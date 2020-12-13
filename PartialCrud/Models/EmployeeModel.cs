@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PartialCrud.Data;
+using System;
 
 namespace PartialCrud.Models
 {
@@ -11,5 +12,12 @@ namespace PartialCrud.Models
         public Nullable<int> Salary { get; set; }
         public Nullable<System.DateTime> DateOfJoining { get; set; }
         public string Status { get; set; }
+        public Nullable<int> CountryId { get; set; }
+        public Nullable<int> StateId { get; set; }
+        public Nullable<int> CityId { get; set; }
+
+        public virtual City City { get; set; }
+        public virtual Country Country { get; set; }
+        public virtual State State { get; set; }
     }
 }

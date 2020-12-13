@@ -1,4 +1,5 @@
-﻿using PartialCrud.Models;
+﻿using PartialCrud.Data;
+using PartialCrud.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,7 @@ namespace PartialCrud.Service
         bool Save(EmployeeModel em,out string msg);
 
         bool Delete(Int64? id);
+
+        //List<EmployeeModel> GetData();
     }
 }

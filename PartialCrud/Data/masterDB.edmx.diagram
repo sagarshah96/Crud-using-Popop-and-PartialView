@@ -5,7 +5,15 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="5a17755073c44f138e742c614581fc3f" Name="Diagram1">
-        <EntityTypeShape EntityType="masterDBModel.Employee" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="masterDBModel.City" Width="1.5" PointX="5.25" PointY="7.625" />
+        <EntityTypeShape EntityType="masterDBModel.Country" Width="1.5" PointX="0.75" PointY="3.5" />
+        <EntityTypeShape EntityType="masterDBModel.Employee" Width="1.5" PointX="7.5" PointY="4.875" />
+        <EntityTypeShape EntityType="masterDBModel.State" Width="1.5" PointX="3" PointY="7.5" />
+        <AssociationConnector Association="masterDBModel.FK_City" />
+        <AssociationConnector Association="masterDBModel.FK_City_ToTable" />
+        <AssociationConnector Association="masterDBModel.FK_Country" />
+        <AssociationConnector Association="masterDBModel.FK_State_ToTable" />
+        <AssociationConnector Association="masterDBModel.FK_State" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

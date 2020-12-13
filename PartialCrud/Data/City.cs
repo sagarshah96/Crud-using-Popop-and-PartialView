@@ -12,21 +12,20 @@ namespace PartialCrud.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class Employee
+    public partial class City
     {
-        public int EmployeeId { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string Designation { get; set; }
-        public Nullable<int> Salary { get; set; }
-        public Nullable<System.DateTime> DateOfJoining { get; set; }
-        public string Status { get; set; }
-        public Nullable<int> CountryId { get; set; }
-        public Nullable<int> StateId { get; set; }
-        public Nullable<int> CityId { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public City()
+        {
+            this.Employee = new HashSet<Employee>();
+        }
     
-        public virtual City City { get; set; }
-        public virtual Country Country { get; set; }
+        public int CityId { get; set; }
+        public string CityName { get; set; }
+        public Nullable<int> StateId { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Employee> Employee { get; set; }
         public virtual State State { get; set; }
     }
 }
